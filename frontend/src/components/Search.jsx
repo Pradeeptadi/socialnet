@@ -1,69 +1,59 @@
+// frontend/src/components/Search.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Search() {
+const Search = () => {
   const [username, setUsername] = useState('');
-  const [result, setResult] = useState(null);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
-    if (!username) return;
+    if (!username.trim()) return;
+
     setLoading(true);
-    setResult(null);
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/username-osint/', {
-        username: username.trim(),
-      });
-      setResult(res.data);
+      const res = await axios.post('http://localhost:8000/api/username-osint/', { username });
+
+      setResults(res.data.results);
     } catch (err) {
-      console.error(err);
-      setResult({ error: 'Failed to fetch results' });
-    } finally {
-      setLoading(false);
+      console.error('Search failed:', err);
+      setResults([]);
     }
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
+    <div className="search-container" style={{ padding: '20px' }}>
       <h2>🔍 Username OSINT Search</h2>
 
       <input
         type="text"
-        placeholder="Enter username..."
+        placeholder="Enter a username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        style={{ padding: '0.5rem', width: '300px' }}
+        style={{ padding: '10px', width: '250px', marginRight: '10px' }}
       />
 
-      <button
-        onClick={handleSearch}
-        style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
-      >
-        Search
+      <button onClick={handleSearch} disabled={loading}>
+        {loading ? 'Searching...' : 'Search'}
       </button>
 
-      {loading && <p>Loading...</p>}
-
-      {result && result.details && (
-        <div style={{ marginTop: '2rem' }}>
-          <h4>🌐 Found on:</h4>
+      <div style={{ marginTop: '20px' }}>
+        {results.length > 0 && (
           <ul>
-            {Object.entries(result.details).map(([platform, link]) => (
-              <li key={platform}>
-                <a href={link} target="_blank" rel="noopener noreferrer">
-                  🔗 {platform}
+            {results.map((item, i) => (
+              <li key={i}>
+                <a href={item.site} target="_blank" rel="noopener noreferrer">
+                  {item.site}
                 </a>
               </li>
             ))}
           </ul>
-        </div>
-      )}
-
-      {result && result.error && (
-        <p style={{ color: 'red' }}>{result.error}</p>
-      )}
+        )}
+        {!loading && results.length === 0 && <p>No results found.</p>}
+      </div>
     </div>
   );
-}
+};
 
 export default Search;

@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+class SocialSite(models.Model):
+    name = models.CharField(max_length=100)
+    url_template = models.CharField(max_length=255)  # e.g. https://github.com/{username}
+
+    def __str__(self):
+        return self.name
