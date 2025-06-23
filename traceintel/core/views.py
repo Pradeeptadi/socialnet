@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import SocialSite
 import httpx
 import asyncio
-from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync, sync_to_async
 
 VALID_STATUS_CODES = [200, 301, 302]
 
@@ -19,12 +19,9 @@ async def check_site(client, username, template):
         print(f"❌ Error on {url}: {e}")
     return None
 
-
-
 async def run_checks(username):
     sites = await sync_to_async(list)(SocialSite.objects.all())
-    print("📦 Sites loaded:", len(sites))  # DEBUG
-    
+    print("📦 Sites loaded:", len(sites))
     async with httpx.AsyncClient() as client:
         tasks = [check_site(client, username, site.url_template) for site in sites]
         return await asyncio.gather(*tasks)
@@ -35,7 +32,7 @@ def username_osint(request):
     if not username:
         return Response({"error": "Username is required"}, status=400)
 
-    results = asyncio.run(run_checks(username))
+    results = async_to_sync(run_checks)(username)
     found = [r for r in results if r is not None]
 
     return Response({

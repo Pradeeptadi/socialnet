@@ -1,6 +1,6 @@
-// frontend/src/components/Search.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Search.css'; // You'll create this CSS file
 
 const Search = () => {
   const [username, setUsername] = useState('');
@@ -11,9 +11,9 @@ const Search = () => {
     if (!username.trim()) return;
 
     setLoading(true);
+    setResults([]);
     try {
       const res = await axios.post('http://localhost:8000/api/username-osint/', { username });
-
       setResults(res.data.results);
     } catch (err) {
       console.error('Search failed:', err);
@@ -23,33 +23,36 @@ const Search = () => {
   };
 
   return (
-    <div className="search-container" style={{ padding: '20px' }}>
+    <div className="search-wrapper">
       <h2>🔍 Username OSINT Search</h2>
 
-      <input
-        type="text"
-        placeholder="Enter a username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        style={{ padding: '10px', width: '250px', marginRight: '10px' }}
-      />
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Enter a username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <button onClick={handleSearch} disabled={loading}>
+          {loading ? 'Searching...' : 'Search'}
+        </button>
+      </div>
 
-      <button onClick={handleSearch} disabled={loading}>
-        {loading ? 'Searching...' : 'Search'}
-      </button>
+      <div className="results">
+        {loading && <p>Loading...</p>}
 
-      <div style={{ marginTop: '20px' }}>
-        {results.length > 0 && (
-          <ul>
+        {!loading && results.length > 0 && (
+          <ul className="result-list">
             {results.map((item, i) => (
-              <li key={i}>
+              <li key={i} className="result-item">
                 <a href={item.site} target="_blank" rel="noopener noreferrer">
-                  {item.site}
+                  🌐 {item.site}
                 </a>
               </li>
             ))}
           </ul>
         )}
+
         {!loading && results.length === 0 && <p>No results found.</p>}
       </div>
     </div>
