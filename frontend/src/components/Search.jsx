@@ -50,15 +50,10 @@ const Search = () => {
     }
   };
 
-  // Filter results by search and category
-  const filteredResults = results
-    .filter((item) => {
-      const siteObj = sites.find(s => item.site.includes(s.url_template.replace('{username}', '')));
-      if (!siteObj) return false;
-      if (category !== 'all' && siteObj.category !== category) return false;
-      if (!siteObj.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-      return true;
-    });
+  const filteredSites = sites.filter(site =>
+    site.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (category === 'all' || site.category === category)
+  );
 
   return (
     <div className="search-wrapper">
@@ -105,19 +100,23 @@ const Search = () => {
           </div>
 
           <ul className="result-list">
-            {filteredResults.map((item, idx) => (
-              <li key={idx} className="result-item">
-                <a href={item.site} target="_blank" rel="noopener noreferrer">
-                  🟢 {extractSiteName(item.site)}
-                </a>
-              </li>
-            ))}
+            {filteredSites.map((site, idx) => {
+              const matched = results.find(r => r.site.includes(site.url_template.replace('{username}', '')));
+              const siteUrl = site.url_template.replace('{username}', username);
+              return (
+                <li key={idx} className="result-item">
+                  <a href={siteUrl} target="_blank" rel="noopener noreferrer">
+                    {matched ? '🟢' : '🔴'} {site.name}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
-
-          {filteredResults.length === 0 && (
-            <p>No matching results found in this category or site name.</p>
-          )}
         </>
+      )}
+
+      {searched && !loading && filteredSites.length === 0 && (
+        <p>No matching sites found for selected category or search term.</p>
       )}
 
       {loading && <p>⏳ Loading...</p>}
