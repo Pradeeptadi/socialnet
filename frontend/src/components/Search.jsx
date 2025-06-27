@@ -13,9 +13,10 @@ const Search = () => {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/sites/`)
-      .then(res => setSites(res.data))
-      .catch(err => console.error('Site load failed:', err));
+    axios
+      .get('http://localhost:8000/api/sites/')
+      .then((res) => setSites(res.data))
+      .catch((err) => console.error('Site load failed:', err));
   }, []);
 
   const handleSearch = async () => {
@@ -23,7 +24,9 @@ const Search = () => {
     setLoading(true);
     setSearched(false);
     try {
-      const res = await axios.post('http://localhost:8000/api/username-osint/', { username });
+      const res = await axios.post('http://localhost:8000/api/username-osint/', {
+        username,
+      });
       setResults(res.data.results);
       setSearched(true);
     } catch (err) {
@@ -50,10 +53,14 @@ const Search = () => {
     }
   };
 
-  const filteredSites = sites.filter(site =>
-    site.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (category === 'all' || site.category === category)
-  );
+  const filteredSites = sites.filter((site) => {
+    const matchesName = site.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = category === 'all' || site.category === category;
+    const isFound = results.find((r) =>
+      r.site.includes(site.url_template.replace('{username}', ''))
+    );
+    return matchesName && matchesCategory && isFound;
+  });
 
   return (
     <div className="search-wrapper">
@@ -84,9 +91,20 @@ const Search = () => {
 
             <div className="category-scroll">
               {[
-                'all', 'social', 'developer', 'job', 'shopping', 'forum',
-                'adult', 'video', 'education', 'travel', 'indian',
-                'finance', 'blog', 'other'
+                'all',
+                'social',
+                'developer',
+                'job',
+                'shopping',
+                'forum',
+                'adult',
+                'video',
+                'education',
+                'travel',
+                'indian',
+                'finance',
+                'blog',
+                'other',
               ].map((cat) => (
                 <button
                   key={cat}
@@ -101,12 +119,11 @@ const Search = () => {
 
           <ul className="result-list">
             {filteredSites.map((site, idx) => {
-              const matched = results.find(r => r.site.includes(site.url_template.replace('{username}', '')));
               const siteUrl = site.url_template.replace('{username}', username);
               return (
                 <li key={idx} className="result-item">
                   <a href={siteUrl} target="_blank" rel="noopener noreferrer">
-                    {matched ? '🟢' : '🔴'} {site.name}
+                    🟢 {extractSiteName(siteUrl)}
                   </a>
                 </li>
               );
@@ -116,7 +133,7 @@ const Search = () => {
       )}
 
       {searched && !loading && filteredSites.length === 0 && (
-        <p>No matching sites found for selected category or search term.</p>
+        <p>No matching results found.</p>
       )}
 
       {loading && <p>⏳ Loading...</p>}

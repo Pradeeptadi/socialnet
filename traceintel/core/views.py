@@ -4,6 +4,74 @@ from .models import SocialSite
 import httpx
 import asyncio
 from asgiref.sync import async_to_sync, sync_to_async
+import phonenumbers
+from phonenumbers import geocoder, carrier, number_type
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import whois
+import dns.resolver
+import socket
+import ssl
+import json
+import requests
+from .domain_utils import (
+    get_whois_info,
+    get_dns_records,
+    get_domain_ip_info,
+    get_ssl_info,
+    get_subdomains,
+    get_blacklist_status,
+    get_technologies,
+)
+
+@api_view(['POST'])
+def domain_osint(request):
+    domain = request.data.get('domain')
+    if not domain:
+        return Response({'error': 'No domain provided'}, status=400)
+
+    try:
+        result = {
+            'domain': domain,
+            'whois': get_whois_info(domain),
+            'dns': get_dns_records(domain),
+            'ip_geolocation': get_domain_ip_info(domain),
+            'ssl': get_ssl_info(domain),
+            'subdomains': get_subdomains(domain),
+            'blacklist': get_blacklist_status(domain),
+            'technologies': get_technologies(domain),
+        }
+        return Response(result)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def phone_osint(request):
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            phone_number = body.get("number")
+
+            parsed = phonenumbers.parse(phone_number, "IN")  # You can use 'None' for auto-detect
+            valid = phonenumbers.is_valid_number(parsed)
+            possible = phonenumbers.is_possible_number(parsed)
+            location = geocoder.description_for_number(parsed, "en")
+            carrier_name = carrier.name_for_number(parsed, "en")
+            line_type = str(number_type(parsed)).split('.')[-1]
+
+            return JsonResponse({
+                "number": phone_number,
+                "valid": valid,
+                "possible": possible,
+                "location": location,
+                "carrier": carrier_name,
+                "line_type": line_type,
+            })
+        except Exception as e:
+            return JsonResponse({"error": f"Failed to process number: {str(e)}"}, status=400)
+    return JsonResponse({"error": "Only POST method allowed."}, status=405)
 
 async def check_site(client, username, template):
     url = template.replace("{username}", username)
