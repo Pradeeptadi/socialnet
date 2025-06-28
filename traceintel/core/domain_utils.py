@@ -5,6 +5,10 @@ import ssl
 import requests
 from ipwhois import IPWhois
 
+import asyncio
+import subprocess
+import json
+
 # WHOIS Info
 def get_whois_info(domain):
     try:
@@ -98,8 +102,21 @@ def get_blacklist_status(domain):
 # Technology Fingerprinting - Placeholder
 def get_technologies(domain):
     try:
-        return {
-            "tech_stack": "N/A - Use Wappalyzer API or BuiltWith"
-        }
+        url = f"https://{domain}"
+        result = subprocess.run(
+            ['wappalyzer', url, '--quiet', '--json'],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        if result.returncode == 0:
+            output = json.loads(result.stdout)
+            technologies = [tech['name'] for tech in output['technologies']]
+            return {"tech_stack": technologies}
+        else:
+            return {"error": "Wappalyzer CLI error", "details": result.stderr}
     except Exception as e:
         return {"error": f"Tech detection failed: {str(e)}"}
+
+
+
