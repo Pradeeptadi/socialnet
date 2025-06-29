@@ -100,3 +100,72 @@
 ul li {
   margin: 4px 0;
 }
+.domain-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.search-bar button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.result-card {
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.list-block, .result-card ul {
+  padding-left: 1.2rem;
+}
+
+.result-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 768px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar input,
+  .search-bar button {
+    width: 100%;
+  }
+
+  .result-card h4 {
+    font-size: 1rem;
+  }
+
+  .result-card {
+    font-size: 0.95rem;
+  }
+}
