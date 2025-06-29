@@ -23,11 +23,8 @@ const Search = () => {
     if (!username.trim()) return;
     setLoading(true);
     setSearched(false);
-    setResults([]);
     try {
-      const res = await axios.post("https://socialnet-backend.onrender.com/api/username-osint/", {
-        username
-      });
+      const res = await axios.post("https://socialnet-backend.onrender.com/api/username-osint/", { username });
       setResults(res.data.results);
       setSearched(true);
     } catch (err) {
@@ -57,8 +54,9 @@ const Search = () => {
   const filteredSites = sites.filter((site) => {
     const matchesName = site.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = category === 'all' || site.category === category;
-    const expectedUrl = site.url_template.replace('{username}', username);
-    const isFound = results.find((r) => r.site === expectedUrl);
+    const isFound = results.some((r) =>
+      r.site.includes(site.url_template.replace('{username}', ''))
+    );
     return matchesName && matchesCategory && isFound;
   });
 
@@ -91,20 +89,9 @@ const Search = () => {
 
             <div className="category-scroll">
               {[
-                'all',
-                'social',
-                'developer',
-                'job',
-                'shopping',
-                'forum',
-                'adult',
-                'video',
-                'education',
-                'travel',
-                'indian',
-                'finance',
-                'blog',
-                'other',
+                'all', 'social', 'developer', 'job', 'shopping', 'forum',
+                'adult', 'video', 'education', 'travel', 'indian',
+                'finance', 'blog', 'other'
               ].map((cat) => (
                 <button
                   key={cat}
@@ -129,11 +116,11 @@ const Search = () => {
               );
             })}
           </ul>
-
-          {filteredSites.length === 0 && (
-            <p>No matching results found, even though some results were returned.</p>
-          )}
         </>
+      )}
+
+      {searched && !loading && filteredSites.length === 0 && (
+        <p>No matching results found.</p>
       )}
 
       {loading && <p>⏳ Loading...</p>}
