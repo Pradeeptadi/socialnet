@@ -104,3 +104,26 @@
     font-size: 15px;
   }
 }
+.search-wrapper,
+.domain-container,
+.phone-wrapper {
+  max-width: 1000px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Make results adapt to smaller screens */
+@media (max-width: 768px) {
+  .result-card {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+
+  .category-scroll button {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.7rem;
+  }
+}

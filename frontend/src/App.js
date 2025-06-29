@@ -7,7 +7,7 @@ import PhoneOSINT from './components/PhoneSearch';
 import DomainSearch from './components/DomainSearch';
 import './App.css';
 
-
+ 
 function App() {
   return (
     <Router>
