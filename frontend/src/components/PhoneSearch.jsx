@@ -12,8 +12,9 @@ const PhoneSearch = () => {
 
     setLoading(true);
     setResult(null);
+
     try {
-      const res = axios.post("https://socialnet-backend.onrender.com/api/phone-osint/", {
+      const res = await axios.post("https://socialnet-backend.onrender.com/api/phone-osint/", {
         phone_number: phone,
       });
       setResult(res.data);
@@ -21,6 +22,7 @@ const PhoneSearch = () => {
       console.error('Search failed:', err);
       setResult({ error: 'Request failed. Please try again.' });
     }
+
     setLoading(false);
   };
 
@@ -43,17 +45,16 @@ const PhoneSearch = () => {
       {loading && <p className="loading-text">⏳ Searching phone number...</p>}
 
       {result && !result.error && (
-  <div className="results-card">
-    <h3>📋 Phone Number Details</h3>
-    <p><strong>Number:</strong> {result.number}</p>
-    <p><strong>Valid:</strong> {result.valid ? '✅ Yes' : '❌ No'}</p>
-    <p><strong>Possible:</strong> {result.possible ? '✅ Yes' : '❌ No'}</p>
-    <p><strong>Location:</strong> {result.location}</p>
-    <p><strong>Carrier:</strong> {result.carrier}</p>
-    <p><strong>Line Type:</strong> {result.line_type}</p>
-  </div>
-)}
-{result?.error && <p style={{ color: 'red' }}>❌ {result.error}</p>}
+        <div className="results-card">
+          <h3>📋 Phone Number Details</h3>
+          <p><strong>Number:</strong> {result.number}</p>
+          <p><strong>Valid:</strong> {result.valid ? '✅ Yes' : '❌ No'}</p>
+          <p><strong>Possible:</strong> {result.possible ? '✅ Yes' : '❌ No'}</p>
+          <p><strong>Location:</strong> {result.location}</p>
+          <p><strong>Carrier:</strong> {result.carrier}</p>
+          <p><strong>Line Type:</strong> {result.line_type}</p>
+        </div>
+      )}
 
       {!loading && result?.error && (
         <p className="error-text">❌ {result.error}</p>
