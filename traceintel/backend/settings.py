@@ -130,6 +130,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://socialnet-wc51.onrender.com",  # ✅ your React frontend domain
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True

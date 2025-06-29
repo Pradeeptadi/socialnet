@@ -46,32 +46,31 @@ def domain_osint(request):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
-
-@csrf_exempt
+@api_view(['POST'])
 def phone_osint(request):
-    if request.method == "POST":
-        try:
-            body = json.loads(request.body)
-            phone_number = body.get("number")
+    phone_number = request.data.get("phone_number")
+    if not phone_number:
+        return Response({"error": "Phone number is required"}, status=400)
 
-            parsed = phonenumbers.parse(phone_number, "IN")  # You can use 'None' for auto-detect
-            valid = phonenumbers.is_valid_number(parsed)
-            possible = phonenumbers.is_possible_number(parsed)
-            location = geocoder.description_for_number(parsed, "en")
-            carrier_name = carrier.name_for_number(parsed, "en")
-            line_type = str(number_type(parsed)).split('.')[-1]
+    try:
+        parsed = phonenumbers.parse(phone_number, "IN")
+        valid = phonenumbers.is_valid_number(parsed)
+        possible = phonenumbers.is_possible_number(parsed)
+        location = geocoder.description_for_number(parsed, "en")
+        carrier_name = carrier.name_for_number(parsed, "en")
+        line_type = str(number_type(parsed)).split('.')[-1]
 
-            return JsonResponse({
-                "number": phone_number,
-                "valid": valid,
-                "possible": possible,
-                "location": location,
-                "carrier": carrier_name,
-                "line_type": line_type,
-            })
-        except Exception as e:
-            return JsonResponse({"error": f"Failed to process number: {str(e)}"}, status=400)
-    return JsonResponse({"error": "Only POST method allowed."}, status=405)
+        return Response({
+            "number": phone_number,
+            "valid": valid,
+            "possible": possible,
+            "location": location,
+            "carrier": carrier_name,
+            "line_type": line_type,
+        })
+    except Exception as e:
+        return Response({"error": f"Failed to process number: {str(e)}"}, status=400)
+
 
 async def check_site(client, username, template):
     url = template.replace("{username}", username)

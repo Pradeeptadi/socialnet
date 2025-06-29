@@ -14,7 +14,7 @@ const PhoneSearch = () => {
     setResult(null);
     try {
       const res = await axios.post(`${process.env.REACT_APP_API}/api/phone-osint/`, {
-        number: phone,
+        phone_number: phone,
       });
       setResult(res.data);
     } catch (err) {
