@@ -7,7 +7,4 @@ urlpatterns = [
     path('phone-osint/', phone_osint),
     path('domain-osint/', domain_osint, name='domain_osint'),
 
-    
-    # fallback to React
-    re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
 ]
