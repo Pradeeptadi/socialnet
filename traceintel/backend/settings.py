@@ -22,7 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret")ALLOWED_HOSTS = ['traceintel-backend.onrender.com']
+SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret") 
+
+ALLOWED_HOSTS = ['traceintel-backend.onrender.com']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'core',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -127,9 +130,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOWED_ORIGINS = [
-    "https://socialnet-wc51.onrender.com",  # ✅ your React frontend domain
-]
+
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
@@ -152,3 +153,4 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
