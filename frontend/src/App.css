@@ -118,3 +118,44 @@ h2 {
     padding: 0.3rem 0.7rem;
   }
 }
+
+/* Full responsive fallback for small screens */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+  }
+
+  .search-bar input,
+  .search-bar button {
+    width: 100%;
+  }
+
+  .filters,
+  .result-card {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .category-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .search-wrapper {
+    padding: 10px;
+  }
+
+  .result-card {
+    padding: 0.8rem;
+  }
+}
