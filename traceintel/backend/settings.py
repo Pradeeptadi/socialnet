@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = False
 SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret") 
 
-ALLOWED_HOSTS = ['traceintel-backend.onrender.com']
+ALLOWED_HOSTS = ['traceintel-backend.onrender.com', 'localhost', '127.0.0.1']
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -152,5 +153,8 @@ CORS_ALLOW_METHODS = [
     "PATCH",
     "POST",
     "PUT",
+]
+CORS_ALLOWED_ORIGINS = [
+    "https://socialnet-wc51.onrender.com",  # Your React domain
 ]
 CORS_ALLOW_ALL_ORIGINS = True
