@@ -14,7 +14,7 @@ const DomainSearch = () => {
     setResult(null);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/domain-osint/', { domain });
+      const res = axios.post(`${process.env.REACT_APP_API}/api/domain-osint/`, { domain });
       setResult(res.data);
     } catch (err) {
       console.error('Search failed:', err);

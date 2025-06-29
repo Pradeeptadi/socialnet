@@ -24,7 +24,7 @@ const Search = () => {
     setLoading(true);
     setSearched(false);
     try {
-      const res = await axios.post('http://localhost:8000/api/username-osint/', {
+      const res = axios.post(`${process.env.REACT_APP_API}/api/username-osint/`, {
         username,
       });
       setResults(res.data.results);
