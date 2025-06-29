@@ -13,7 +13,7 @@ const PhoneSearch = () => {
     setLoading(true);
     setResult(null);
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/phone-osint/`, {
+      const res = axios.post("https://socialnet-backend.onrender.com/api/phone-osint/", {
         phone_number: phone,
       });
       setResult(res.data);

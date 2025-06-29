@@ -14,7 +14,7 @@ const DomainSearch = () => {
     setResult(null);
 
     try {
-      const res = axios.post(`${process.env.REACT_APP_API}/api/domain-osint/`, { domain });
+      const res = axios.post("https://socialnet-backend.onrender.com/api/domain-osint/", { domain });
       setResult(res.data);
     } catch (err) {
       console.error('Search failed:', err);

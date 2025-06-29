@@ -24,7 +24,7 @@ const Search = () => {
     setLoading(true);
     setSearched(false);
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/username-osint/`, { username });
+      const res = await axios.post("https://socialnet-backend.onrender.com/api/username-osint/", { username });
       setResults(res.data.results);
       setSearched(true);
     } catch (err) {
