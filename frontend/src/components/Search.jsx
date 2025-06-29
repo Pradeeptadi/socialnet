@@ -14,7 +14,7 @@ const Search = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/api/sites/')
+      .get('https://socialnet-backend.onrender.com/api/sites/')
       .then((res) => setSites(res.data))
       .catch((err) => console.error('Site load failed:', err));
   }, []);
@@ -23,8 +23,11 @@ const Search = () => {
     if (!username.trim()) return;
     setLoading(true);
     setSearched(false);
+    setResults([]);
     try {
-      const res = await axios.post("https://socialnet-backend.onrender.com/api/username-osint/", { username });
+      const res = await axios.post("https://socialnet-backend.onrender.com/api/username-osint/", {
+        username
+      });
       setResults(res.data.results);
       setSearched(true);
     } catch (err) {
@@ -54,9 +57,8 @@ const Search = () => {
   const filteredSites = sites.filter((site) => {
     const matchesName = site.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = category === 'all' || site.category === category;
-    const isFound = results.find((r) =>
-      r.site.includes(site.url_template.replace('{username}', ''))
-    );
+    const expectedUrl = site.url_template.replace('{username}', username);
+    const isFound = results.find((r) => r.site === expectedUrl);
     return matchesName && matchesCategory && isFound;
   });
 
@@ -127,11 +129,11 @@ const Search = () => {
               );
             })}
           </ul>
-        </>
-      )}
 
-      {searched && !loading && filteredSites.length === 0 && (
-        <p>No matching results found.</p>
+          {filteredSites.length === 0 && (
+            <p>No matching results found, even though some results were returned.</p>
+          )}
+        </>
       )}
 
       {loading && <p>⏳ Loading...</p>}
