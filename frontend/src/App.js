@@ -5,6 +5,8 @@ import Home from './components/Home';
 import Search from './components/Search';  // Your username OSINT component
 import PhoneOSINT from './components/PhoneSearch';
 import DomainSearch from './components/DomainSearch';
+import './App.css';
+
 
 function App() {
   return (
