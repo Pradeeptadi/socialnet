@@ -19,13 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3cz@g3-yaz=^%ob1@xw#(e-5$f$c&-l5s#@%cbd%*3=3!)ssyn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret")
-ALLOWED_HOSTS = ['your-backend-name.onrender.com']
+SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret")ALLOWED_HOSTS = ['traceintel-backend.onrender.com']
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -46,17 +44,17 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -132,5 +130,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "https://socialnet-wc51.onrender.com",  # ✅ your React frontend domain
 ]
+CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
